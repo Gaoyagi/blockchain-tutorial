@@ -1,5 +1,5 @@
 import json
-import time
+from datetime import datetime
 import hashlib
 
 
@@ -19,7 +19,7 @@ class Blockchain(object):
     def newBlock(self, previous_hash, proof):
         block = {
             'index': len(self.chain) + 1,
-            'timestamp': time(),
+            'timestamp': str(datetime.now()),
             'proof': proof,
             'previous_hash': previous_hash or self.hash(self.chain[-1]),        #after previous block is compelted then you make the hash
             'transactions': self.transactions
@@ -39,7 +39,7 @@ class Blockchain(object):
 
         return self.last_block['index'] + 1
 
-    #static methods: only 1 occurance for all the occruances of this class object
+    #static methods: only 1 occurance for all the occruances of this class object, this alsmot means theydont mean a "Self" arg
     @staticmethod
     def hash(block):
         block_string = json.dumps(block, sort_keys=True).encode()
@@ -56,6 +56,6 @@ class Blockchain(object):
     def valid_proof(last_proof, proof):
         """This method validates the block"""
         guess = f'{last_proof}{proof}'.encode()
-        guess_hash = hashlib.sha256(guess).hexigest()
+        guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
 
